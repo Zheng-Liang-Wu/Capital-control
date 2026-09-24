@@ -23,7 +23,7 @@
 
 ## GitHub Pages
 
-將專案推送至 GitHub repository，在 repository 的 **Settings → Pages** 選擇從 `main` 分支根目錄部署。完成後開啟 Pages 網址即可使用；`config.js` 已設為讀取使用者提供的試算表。確認試算表資料可公開讀取後部署。
+repository 已設定為從 `main` 分支根目錄發布 GitHub Pages。之後推送前端檔案到 `main`，GitHub Pages 會自動重新建置；試算表資料則由前端每 30 秒同步一次。
 
 ## 計算方式
 

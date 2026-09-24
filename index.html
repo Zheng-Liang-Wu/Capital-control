@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>資金配置｜資金管控儀表板</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="資金配置首頁"><span class="brand-mark">資</span><span>資金配置</span></a>
+      <div class="top-actions"><span class="updated" id="updated">等待同步</span><button class="refresh-button" id="refresh-button" type="button" aria-label="立即更新試算表資料">↻ 更新</button><a class="form-link" id="form-link" href="#" target="_blank" rel="noreferrer">開啟試算表 ↗</a></div>
+    </header>
+
+    <section class="intro" id="top">
+      <div><p class="eyebrow">CAPITAL ALLOCATION</p><h1>看清每一筆資金<br><span>目前配置在哪裡。</span></h1><p class="intro-copy">每次透過手機表單更新本金與各倉位金額，這裡就會整理出配置比例。</p></div>
+      <div class="intro-note"><span class="note-dot"></span><span id="data-status">目前顯示範例資料</span></div>
+    </section>
+
+    <section class="summary-grid" aria-label="資金總覽">
+      <article class="summary-card total-card"><div class="card-label">目前總本金 <span class="label-icon">↗</span></div><div class="total-value" id="total-capital">—</div><div class="card-foot"><span>依最近一次表單填報</span><span class="foot-dot"></span></div></article>
+      <article class="summary-card"><div class="card-label">目前已投入 <span class="label-icon">◒</span></div><div class="metric-value" id="invested-total">—</div><div class="metric-foot" id="invested-ratio">—</div></article>
+      <article class="summary-card"><div class="card-label">U 倉・等待進場 <span class="label-icon">◌</span></div><div class="metric-value" id="reserve-value">—</div><div class="metric-foot" id="reserve-ratio">—</div></article>
+      <article class="summary-card"><div class="card-label">現貨配置 <span class="label-icon">◇</span></div><div class="metric-value" id="spot-ratio">—</div><div class="metric-foot" id="spot-state">最低配置 70%</div></article>
+    </section>
+
+    <section class="allocation-section">
+      <div class="section-heading"><div><p class="eyebrow">YOUR PORTFOLIO</p><h2>倉位配置</h2></div><div class="basis-chip"><span></span> 以已投入金額計算</div></div>
+      <div class="allocation-layout">
+        <article class="allocation-card">
+          <div class="allocation-top"><div><span class="small-label">資金分布</span><h3>本金配置比例</h3></div><span class="total-pill" id="allocation-total">本金 —</span></div>
+          <div class="bar-track" id="bar-track" aria-label="各倉位資金分布"></div>
+          <div class="legend" id="legend"></div>
+          <div class="allocation-foot"><span>現貨下限參考</span><div class="threshold"><span></span><b>70%</b><i></i></div><span>100%</span></div>
+        </article>
+        <article class="positions-card"><div class="positions-heading"><h3>各倉位明細</h3><span>金額 / 占本金</span></div><div id="positions"></div><div class="unallocated-row"><div class="position-name"><span class="position-icon">＋</span><span>尚未分配</span></div><div class="position-value"><b id="unallocated-value">—</b><span id="unallocated-ratio">—</span></div></div></article>
+      </div>
+    </section>
+
+    <footer><span>資料以你最近一次表單填報為準。</span><span id="source-note">金額單位：TWD / USDT 依你的填報方式</span></footer>
+  </main>
+</body>
+</html>

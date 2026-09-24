@@ -2,8 +2,8 @@
   const config = window.DASHBOARD_CONFIG || {};
   const positions = [
     { key: "spot", name: "現貨", description: "固定底倉", color: "spot", icon: "◈" },
-    { key: "longTerm", name: "長線合約", description: "周線判斷進場", color: "long", icon: "↗" },
-    { key: "trend", name: "趨勢合約", description: "日線判斷進場", color: "trend", icon: "⌁" },
+    { key: "longTerm", name: "合約長線倉位", description: "周線判斷進場", color: "long", icon: "↗" },
+    { key: "trend", name: "合約波段倉位", description: "日線判斷進場", color: "trend", icon: "⌁" },
     { key: "reserve", name: "U 倉", description: "等待進場 / 掛單", color: "reserve", icon: "Ｕ" }
   ];
   const demo = { date: "", capital: 10000, spot: 7200, longTerm: 1100, trend: 700, reserve: 1000 };
@@ -11,6 +11,7 @@
   let lastData = null;
   let refreshing = false;
   const money = n => `${config.CURRENCY || "USDT"} ${new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 }).format(n || 0)}`;
+  const twd = n => `約 NT$ ${new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 }).format((n || 0) * Number(config.USDT_TWD_RATE || 31.8))}`;
   const pct = (n, total) => total > 0 ? `${(n / total * 100).toFixed(1)}%` : "—";
   const set = (id, value) => { document.getElementById(id).textContent = value; };
 
@@ -29,7 +30,7 @@
   }
   function number(value) { const n = Number(String(value || "").replace(/[,$\s]/g, "")); return Number.isFinite(n) ? n : 0; }
   function normalise(headers, values) {
-    const keys = { "時間戳記": "date", "填寫日期": "date", "日期": "date", "總本金": "capital", "現貨金額": "spot", "現貨": "spot", "長線合約金額": "longTerm", "長線合約": "longTerm", "趨勢合約金額": "trend", "趨勢合約": "trend", "U倉金額": "reserve", "U 倉金額": "reserve", "U倉": "reserve", "U 倉": "reserve" };
+    const keys = { "時間戳記": "date", "填寫日期": "date", "日期": "date", "總本金": "capital", "現貨金額": "spot", "現貨": "spot", "長線合約金額": "longTerm", "長線合約": "longTerm", "合約長線倉位": "longTerm", "趨勢合約金額": "trend", "趨勢合約": "trend", "合約波段金額": "trend", "合約波段倉位": "trend", "波段合約金額": "trend", "U倉金額": "reserve", "U 倉金額": "reserve", "U倉": "reserve", "U 倉": "reserve" };
     const result = { ...demo };
     headers.forEach((h, i) => { const key = keys[h.trim()]; if (key === "date") result.date = values[i] || ""; else if (key) result[key] = number(values[i]); });
     return result;
@@ -51,9 +52,10 @@
     const remaining = capital - allocated;
     const spotPct = capital ? values.spot / capital * 100 : 0;
     set("total-capital", money(capital)); set("allocation-total", `本金 ${money(capital)}`);
-    set("invested-total", money(invested)); set("invested-ratio", `${pct(invested, capital)} 已投入（不含 U 倉）`);
-    set("reserve-value", money(values.reserve)); set("reserve-ratio", `${pct(values.reserve, capital)} 占總本金`);
-    set("spot-ratio", `${spotPct.toFixed(1)}%`);
+    set("spot-amount", money(values.spot)); set("spot-ratio", `${pct(values.spot, capital)} 占總本金`);
+    set("long-amount", money(values.longTerm)); set("long-ratio", `${pct(values.longTerm, capital)} 占總本金`);
+    set("trend-amount", money(values.trend)); set("trend-ratio", `${pct(values.trend, capital)} 占總本金`);
+    set("reserve-value", money(values.reserve)); set("reserve-ratio", `${pct(values.reserve, capital)} 占總本金`); set("reserve-twd", twd(values.reserve));
     const minimum = Number(config.SPOT_MINIMUM_PERCENT ?? 70);
     const spotState = document.getElementById("spot-state");
     spotState.textContent = spotPct >= minimum ? `已達 ${minimum}% 最低配置` : `低於 ${minimum}% 下限`;
@@ -61,7 +63,7 @@
     const total = capital || 1;
     document.getElementById("bar-track").innerHTML = positions.map(p => `<span class="bar-segment ${p.color}" style="width:${Math.min(100, values[p.key] / total * 100)}%" title="${p.name} ${pct(values[p.key], capital)}"></span>`).join("");
     document.getElementById("legend").innerHTML = positions.map(p => `<div class="legend-item"><span class="legend-dot ${p.color}"></span><span>${p.name}</span><b>${pct(values[p.key], capital)}</b></div>`).join("");
-    document.getElementById("positions").innerHTML = positions.map(p => `<div class="position-row"><div class="position-name"><span class="position-icon ${p.color}">${p.icon}</span><span><b>${p.name}</b><small>${p.description}</small></span></div><div class="position-value"><b>${money(values[p.key])}</b><span>${pct(values[p.key], capital)}</span></div></div>`).join("");
+    document.getElementById("positions").innerHTML = positions.map(p => `<div class="position-row"><div class="position-name"><span class="position-icon ${p.color}">${p.icon}</span><span><b>${p.name}</b><small>${p.description}</small></span></div><div class="position-value"><b>${money(values[p.key])}</b><span>${pct(values[p.key], capital)}</span>${p.key === "reserve" ? `<small class="twd-equivalent">${twd(values[p.key])}</small>` : ""}</div></div>`).join("");
     set("unallocated-value", money(Math.max(0, remaining))); set("unallocated-ratio", pct(Math.max(0, remaining), capital));
     if (remaining < 0) { set("unallocated-value", `超出 ${money(Math.abs(remaining))}`); document.getElementById("unallocated-ratio").textContent = "填報金額高於本金"; }
     const dateText = data.noEntries ? "尚無資料" : data.date ? `更新於 ${data.date}` : data.isDemo ? "範例資料" : "已載入試算表";

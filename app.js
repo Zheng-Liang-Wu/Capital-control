@@ -52,9 +52,10 @@
     const remaining = capital - allocated;
     const spotPct = capital ? values.spot / capital * 100 : 0;
     set("total-capital", money(capital)); set("allocation-total", `本金 ${money(capital)}`);
-    set("spot-amount", money(values.spot)); set("spot-ratio", `${pct(values.spot, capital)} 占總本金`);
-    set("long-amount", money(values.longTerm)); set("long-ratio", `${pct(values.longTerm, capital)} 占總本金`);
-    set("trend-amount", money(values.trend)); set("trend-ratio", `${pct(values.trend, capital)} 占總本金`);
+    set("capital-twd", twd(capital));
+    set("spot-amount", money(values.spot)); set("spot-twd", twd(values.spot)); set("spot-ratio", `${pct(values.spot, capital)} 占總本金`);
+    set("long-amount", money(values.longTerm)); set("long-twd", twd(values.longTerm)); set("long-ratio", `${pct(values.longTerm, capital)} 占總本金`);
+    set("trend-amount", money(values.trend)); set("trend-twd", twd(values.trend)); set("trend-ratio", `${pct(values.trend, capital)} 占總本金`);
     set("reserve-value", money(values.reserve)); set("reserve-ratio", `${pct(values.reserve, capital)} 占總本金`); set("reserve-twd", twd(values.reserve));
     const minimum = Number(config.SPOT_MINIMUM_PERCENT ?? 70);
     const spotState = document.getElementById("spot-state");

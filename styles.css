@@ -22,3 +22,10 @@
 @media(max-width:900px){.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.topbar{height:auto;min-height:68px;gap:10px}.brand{font-size:11px;letter-spacing:.1em}.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:22px}.summary-card{padding:15px;min-height:125px}.summary-card .metric-value{font-size:15px}.summary-card .total-value{font-size:18px}.allocation-section{margin-top:34px}}
 @media(max-width:380px){.shell{padding:0 14px}.summary-grid{gap:8px}.summary-card{padding:12px}.summary-card .card-label{font-size:9px}.summary-card .metric-value{font-size:13px}.summary-card .total-value{font-size:16px}.top-actions{gap:6px}.updated{display:none}}
+.summary-card{min-height:156px}
+.summary-card .metric-value,.summary-card .total-value{margin-bottom:4px}
+.summary-card .twd-line{font-size:10px;color:#367854;font-weight:600;margin-bottom:6px}
+.total-card .twd-line{color:#c5dfcd}
+.total-card .card-foot{margin-top:3px}
+@media(max-width:760px){.summary-card{min-height:148px}}
+@media(max-width:380px){.summary-card{min-height:145px}}
